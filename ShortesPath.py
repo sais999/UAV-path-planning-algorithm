@@ -34,7 +34,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 #function to check if an edge is on the available space
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
-    for point in np.linspace(edge[0], edge[1], num=100):
+    for point in np.linspace(edge[0], edge[1], num=5000):
         x, y = map(int, point)
         if area[x, y] == 1:
             return False
@@ -53,13 +53,13 @@ area = np.zeros((area_size, area_size), dtype=int)
 num_obstacles = 25
 min_obstacle_size = 5
 max_obstacle_size = 15
-
+safety = 4
 # Store the nodes in a list
 graph_nodes = []
 #for loop to create the random obstacles
 for _ in range(num_obstacles):
-    obstacle_width = np.random.randint(min_obstacle_size, max_obstacle_size + 1)
-    obstacle_height = np.random.randint(min_obstacle_size, max_obstacle_size + 1)
+    obstacle_width = np.random.randint(min_obstacle_size + safety, max_obstacle_size + 1 + safety)
+    obstacle_height = np.random.randint(min_obstacle_size + safety, max_obstacle_size + 1 + safety)
 
     x = np.random.randint(0, area_size - obstacle_width)
     y = np.random.randint(0, area_size - obstacle_height)
@@ -74,7 +74,12 @@ for _ in range(num_obstacles):
     if area[x+obstacle_width][y+obstacle_height] == 0:
         graph_nodes.append((x+obstacle_width, y+obstacle_height))
 
+    #commented code is for safety to be shown with red color
+    #area[x: x + obstacle_width + safety, y: y - safety] = 2
+    #area[x: x - safety, y:y + obstacle_height + safety ]
+    #area[x:x + obstacle_width + safety, y:y + obstacle_height + safety] = 2
     area[x:x + obstacle_width, y:y + obstacle_height] = 1
+
 
 # Create a graph and add nodes
 G = nx.Graph()
