@@ -34,7 +34,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 #function to check if an edge is on the available space
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
-    for point in np.linspace(edge[0], edge[1], num=100):
+    for point in np.linspace(edge[0], edge[1], num=5000):
         x, y = map(int, point)
         if area[x, y] == 1:
             return False
@@ -53,7 +53,7 @@ area = np.zeros((area_size, area_size), dtype=int)
 num_obstacles = 25
 min_obstacle_size = 5
 max_obstacle_size = 15
-safety = 4
+safety = 2 #safety distance from every obstacle
 # Store the nodes in a list
 graph_nodes = []
 #for loop to create the random obstacles
@@ -88,9 +88,11 @@ G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
 # Select random start (A) and end (B) points from available space nodes
-start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
-start_point = available_space_nodes[start_point]
-end_point = available_space_nodes[end_point]
+#start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#start_point = available_space_nodes[start_point]
+#end_point = available_space_nodes[end_point]
+start_point = (0, 0)
+end_point = (area_size-1, area_size-1)
 
 # Add start and end points to the graph
 G.add_node(start_point)
@@ -105,6 +107,8 @@ graph_nodes.append(end_point)
 #G.add_edge(start_point, tuple(closest_start_nodes[0]), weight=np.linalg.norm(np.array(start_point) - np.array(closest_start_nodes[0])))
 #G.add_edge(end_point, tuple(closest_end_nodes[0]), weight=np.linalg.norm(np.array(end_point) - np.array(closest_end_nodes[0])))
 
+# set threshold for the distance of a possible edge
+threshold = 2 * area_size
 # Connect nodes based on distance and add weights
 for i, node in enumerate(graph_nodes):
     for j in range(i+1, len(graph_nodes)):
@@ -112,7 +116,7 @@ for i, node in enumerate(graph_nodes):
         distance = np.linalg.norm(np.array(node) - np.array(other_node))
         edge = np.array([node, other_node])
         # set threshold for the distance of a possible edge
-        if distance < 200 and is_valid_edge(edge, area):
+        if distance < threshold and is_valid_edge(edge, area):
             G.add_edge(tuple(node), tuple(other_node), weight=distance)  # Convert nodes to tuples
 
 
