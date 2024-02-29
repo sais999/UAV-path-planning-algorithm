@@ -96,7 +96,8 @@ coordinates_file_path = os.path.join(folder_path, 'coordinates1.txt')
 with open(coordinates_file_path, 'w') as f:
     for coord in listOfCoordinates:
         f.write(f"x: {coord['x']}, y: {coord['y']}\n")
-
+# Save the array to a file
+np.save('Graphs/Graph1/area.npy', area)
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
 

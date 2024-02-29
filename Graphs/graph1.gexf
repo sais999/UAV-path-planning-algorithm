@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2024-02-29">
+    <creator>NetworkX 3.2.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <nodes>
+      <node id="(50, 55)" label="(50, 55)" />
+      <node id="(5, 67)" label="(5, 67)" />
+      <node id="(5, 88)" label="(5, 88)" />
+      <node id="(41, 45)" label="(41, 45)" />
+      <node id="(15, 60)" label="(15, 60)" />
+      <node id="(36, 60)" label="(36, 60)" />
+      <node id="(79, 65)" label="(79, 65)" />
+      <node id="(79, 79)" label="(79, 79)" />
+      <node id="(92, 65)" label="(92, 65)" />
+      <node id="(92, 79)" label="(92, 79)" />
+      <node id="(27, 85)" label="(27, 85)" />
+      <node id="(27, 97)" label="(27, 97)" />
+      <node id="(43, 85)" label="(43, 85)" />
+      <node id="(43, 97)" label="(43, 97)" />
+      <node id="(29, 21)" label="(29, 21)" />
+      <node id="(15, 52)" label="(15, 52)" />
+      <node id="(6, 98)" label="(6, 98)" />
+      <node id="(26, 87)" label="(26, 87)" />
+      <node id="(26, 98)" label="(26, 98)" />
+      <node id="(45, 90)" label="(45, 90)" />
+      <node id="(70, 8)" label="(70, 8)" />
+      <node id="(70, 27)" label="(70, 27)" />
+      <node id="(52, 60)" label="(52, 60)" />
+      <node id="(52, 76)" label="(52, 76)" />
+      <node id="(66, 60)" label="(66, 60)" />
+      <node id="(74, 17)" label="(74, 17)" />
+      <node id="(74, 36)" label="(74, 36)" />
+      <node id="(88, 17)" label="(88, 17)" />
+      <node id="(88, 36)" label="(88, 36)" />
+      <node id="(5, 13)" label="(5, 13)" />
+      <node id="(5, 31)" label="(5, 31)" />
+      <node id="(17, 13)" label="(17, 13)" />
+      <node id="(41, 4)" label="(41, 4)" />
+      <node id="(54, 4)" label="(54, 4)" />
+      <node id="(22, 84)" label="(22, 84)" />
+      <node id="(42, 65)" label="(42, 65)" />
+      <node id="(42, 84)" label="(42, 84)" />
+      <node id="(17, 53)" label="(17, 53)" />
+      <node id="(37, 53)" label="(37, 53)" />
+      <node id="(21, 4)" label="(21, 4)" />
+      <node id="(21, 16)" label="(21, 16)" />
+      <node id="(32, 4)" label="(32, 4)" />
+      <node id="(61, 56)" label="(61, 56)" />
+      <node id="(80, 36)" label="(80, 36)" />
+      <node id="(80, 56)" label="(80, 56)" />
+      <node id="(51, 67)" label="(51, 67)" />
+      <node id="(61, 94)" label="(61, 94)" />
+      <node id="(73, 73)" label="(73, 73)" />
+      <node id="(73, 94)" label="(73, 94)" />
+      <node id="(9, 38)" label="(9, 38)" />
+      <node id="(23, 22)" label="(23, 22)" />
+    </nodes>
+    <edges />
+  </graph>
+</gexf>

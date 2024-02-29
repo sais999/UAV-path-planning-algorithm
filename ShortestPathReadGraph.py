@@ -2,7 +2,8 @@ import numpy as np
 import networkx as nx
 import os
 import matplotlib.pyplot as plt
-def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point):
+#function to display graph, obstacles, nodes, start and end points, and shortest path
+def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black', 'red'])
     bounds = [0, 1, 2, 3]
     norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
@@ -17,6 +18,11 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
     plt.plot(start_point[1], start_point[0], 'bo', markersize=8, label='Start (A)')
     plt.plot(end_point[1], end_point[0], 'yo', markersize=8, label='End (B)')
 
+    # Plot the path
+    if path:
+        path_nodes = np.array(path)
+        plt.plot(path_nodes[:, 1], path_nodes[:, 0], 'r-', linewidth=2, label='Shortest Path (A to B)')
+
     # Show legend
     plt.legend()
 
@@ -25,9 +31,17 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
     cbar.set_label('Color', rotation=270, labelpad=15)
 
     plt.show()
+#function to check if an edge is on the available space
+def is_valid_edge(edge, area):
+    # Check if the edge overlaps with obstacles
+    for point in np.linspace(edge[0], edge[1], num=5000):
+        x, y = map(int, point)
+        if area[x, y] == 1:
+            return False
+    return True
 
 # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph1/graph.gexf'
+graph_file_path = 'Graphs/Graph2/graph.gexf'
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
 # Create a 100x100 area
@@ -51,7 +65,7 @@ graph_nodes = []
 # print(area)
 
 # File path
-file_path = 'Graphs/Graph1/coordinates.txt'
+file_path = 'Graphs/Graph2/coordinates.txt'
 
 # List to store coordinates
 listOfCoordinates = []
@@ -74,7 +88,7 @@ with open(file_path, 'r') as f:
             # Append to the list
             listOfCoordinates.append(nodeCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_height.txt'
+file_path = 'Graphs/Graph2/obstacle_height.txt'
 
 # List to store obstacle heights
 listObstacleHeight = []
@@ -88,14 +102,14 @@ with open(file_path, 'r') as f:
         # Append to the list
         listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
-area = np.load('Graphs/Graph1/area.npy')
+area = np.load('Graphs/Graph2/area.npy')
 # Print the list of obstacle heights
 print(listObstacleHeight)
 
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_width.txt'
+file_path = 'Graphs/Graph2/obstacle_width.txt'
 
 # List to store obstacle heights
 listObstacleWidth = []
@@ -131,5 +145,36 @@ for i in range(num_obstacles):
 start_point = (1, 1)
 end_point = (area_size - 2, area_size - 2)
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
+# Add start and end points to the graph
+G.add_node(start_point)
+G.add_node(end_point)
+
+graph_nodes.append(start_point)
+graph_nodes.append(end_point)
+# set threshold for the distance of a possible edge
+threshold = 2 * area_size
+# Connect nodes based on distance and add weights
+for i, node in enumerate(graph_nodes):
+    for j in range(i+1, len(graph_nodes)):
+        other_node = graph_nodes[j]
+        distance = np.linalg.norm(np.array(node) - np.array(other_node))
+        edge = np.array([node, other_node])
+        # set threshold for the distance of a possible edge
+        if distance < threshold and is_valid_edge(edge, area):
+            G.add_edge(tuple(node), tuple(other_node), weight=distance)  # Convert nodes to tuples
+
+
+
+# Find the shortest path using Dijkstra's algorithm
+shortest_path = None
+try:
+    shortest_path = nx.shortest_path(G, source=start_point, target=end_point, weight='weight')
+except nx.NetworkXNoPath:
+    print("No valid path found. Please try again with different obstacle distribution.")
+
+# Extract nodes and edges for visualization
+graph_nodes = list(G.nodes())
+graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]
+
 # Display the array with the graph nodes, edges, and the shortest path
-display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
+display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)

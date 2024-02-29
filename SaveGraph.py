@@ -84,7 +84,7 @@ G = nx.Graph()
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 
 # Folder path to save graphs
-folder_path = 'Graphs/Graph5'
+folder_path = 'Graphs/Graph2'
 os.makedirs(folder_path, exist_ok=True)
 
 # Save the graph
@@ -107,7 +107,11 @@ obstacle_height_file_path = os.path.join(folder_path,'obstacle_height.txt')
 with open(obstacle_height_file_path, 'w') as f:
     for height in listObstacleHeight:
         f.write(f"{height},\n")
-
+# Save the array to a file
+print(listObstacleWidth)
+print(listObstacleHeight)
+print(listOfCoordinates)
+np.save('Graphs/Graph2/area.npy', area)
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
 
