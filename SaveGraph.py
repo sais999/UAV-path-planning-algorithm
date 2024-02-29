@@ -64,27 +64,13 @@ for _ in range(num_obstacles):
 start_point = (1, 1)
 end_point = (area_size - 2, area_size - 2)
 
-# # Identify corners and store them as nodes
-# for i in range(num_obstacles):
-#     x = listOfCoordinates[i]['x']
-#     y = listOfCoordinates[i]['y']
-#     obstacle_width = listObstacleWidth[i]
-#     obstacle_height = listObstacleHeight[i]
-#     if area[x-1][y-1] == 0:
-#         graph_nodes.append((x-1, y-1))
-#     if area[x-1][y+obstacle_height] == 0:
-#         graph_nodes.append((x-1, y+obstacle_height))
-#     if area[x+obstacle_width][y-1] == 0:
-#         graph_nodes.append((x+obstacle_width, y-1))
-#     if area[x+obstacle_width][y+obstacle_height] == 0:
-#         graph_nodes.append((x+obstacle_width, y+obstacle_height))
 
 # Create a graph and add nodes
 G = nx.Graph()
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 
 # Folder path to save graphs
-folder_path = 'Graphs/Graph2'
+folder_path = 'Graphs/Graph5' #SOSOS SET THE PATH
 os.makedirs(folder_path, exist_ok=True)
 
 # Save the graph
@@ -111,7 +97,7 @@ with open(obstacle_height_file_path, 'w') as f:
 print(listObstacleWidth)
 print(listObstacleHeight)
 print(listOfCoordinates)
-np.save('Graphs/Graph2/area.npy', area)
+np.save('Graphs/Graph5/area.npy', area) #SOSOS SET THE PATH
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
 

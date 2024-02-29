@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 import os
 import matplotlib.pyplot as plt
+
 #function to display graph, obstacles, nodes, start and end points, and shortest path
 def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black', 'red'])
@@ -31,6 +32,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
     cbar.set_label('Color', rotation=270, labelpad=15)
 
     plt.show()
+
 #function to check if an edge is on the available space
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
@@ -41,31 +43,16 @@ def is_valid_edge(edge, area):
     return True
 
 # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph2/graph.gexf'
+graph_file_path = 'Graphs/Graph5/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
 # Create a 100x100 area
 area_size = 100
 area = np.zeros((area_size, area_size), dtype=int)
 graph_nodes = []
-# # Get the maximum x and y values to determine the size of the area
-# #max_x = max(int(node[0]) for node in G.nodes())
-# #max_y = max(int(node[1]) for node in G.nodes())
-#
-# # Create a 2D array (area) based on the maximum x and y values
-# #area_size = max(max_x, max_y) + 3  # Add a margin
-# #area = np.zeros((area_size, area_size), dtype=int)
-#
-# # Fill the area based on the graph nodes
-# for node in G.nodes():
-#     area[int(node[0]), int(node[1])] = 1
-#
-# # Print the area
-# print("Area:")
-# print(area)
 
 # File path
-file_path = 'Graphs/Graph2/coordinates.txt'
+file_path = 'Graphs/Graph5/coordinates.txt'  #SOSOS SET THE PATH
 
 # List to store coordinates
 listOfCoordinates = []
@@ -88,7 +75,7 @@ with open(file_path, 'r') as f:
             # Append to the list
             listOfCoordinates.append(nodeCoordinates)
 # File path
-file_path = 'Graphs/Graph2/obstacle_height.txt'
+file_path = 'Graphs/Graph5/obstacle_height.txt' #SOSOS SET THE PATH
 
 # List to store obstacle heights
 listObstacleHeight = []
@@ -102,14 +89,14 @@ with open(file_path, 'r') as f:
         # Append to the list
         listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
-area = np.load('Graphs/Graph2/area.npy')
+area = np.load('Graphs/Graph5/area.npy') #SOSOS SET THE PATH
 # Print the list of obstacle heights
 print(listObstacleHeight)
 
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
-file_path = 'Graphs/Graph2/obstacle_width.txt'
+file_path = 'Graphs/Graph5/obstacle_width.txt' #SOSOS SET THE PATH LAST
 
 # List to store obstacle heights
 listObstacleWidth = []
