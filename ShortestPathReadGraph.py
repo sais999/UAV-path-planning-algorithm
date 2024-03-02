@@ -43,7 +43,7 @@ def is_valid_edge(edge, area):
     return True
 
 # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph5/graph.gexf'  #SOSOS SET THE PATH
+graph_file_path = 'Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
 # Create a 100x100 area
@@ -52,7 +52,7 @@ area = np.zeros((area_size, area_size), dtype=int)
 graph_nodes = []
 
 # File path
-file_path = 'Graphs/Graph5/coordinates.txt'  #SOSOS SET THE PATH
+file_path = 'Graphs/Graph1/coordinates.txt'  #SOSOS SET THE PATH
 
 # List to store coordinates
 listOfCoordinates = []
@@ -75,7 +75,7 @@ with open(file_path, 'r') as f:
             # Append to the list
             listOfCoordinates.append(nodeCoordinates)
 # File path
-file_path = 'Graphs/Graph5/obstacle_height.txt' #SOSOS SET THE PATH
+file_path = 'Graphs/Graph1/obstacle_height.txt' #SOSOS SET THE PATH
 
 # List to store obstacle heights
 listObstacleHeight = []
@@ -89,14 +89,14 @@ with open(file_path, 'r') as f:
         # Append to the list
         listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
-area = np.load('Graphs/Graph5/area.npy') #SOSOS SET THE PATH
+area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 # Print the list of obstacle heights
 print(listObstacleHeight)
 
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
-file_path = 'Graphs/Graph5/obstacle_width.txt' #SOSOS SET THE PATH LAST
+file_path = 'Graphs/Graph1/obstacle_width.txt' #SOSOS SET THE PATH LAST
 
 # List to store obstacle heights
 listObstacleWidth = []
@@ -113,12 +113,14 @@ with open(file_path, 'r') as f:
 # Print the list of obstacle heights
 print(listObstacleWidth)
 
- # Identify corners and store them as nodes
-for i in range(num_obstacles):
-     x = listOfCoordinates[i]['x']
-     y = listOfCoordinates[i]['y']
-     obstacle_width_for = listObstacleWidth[i]
-     obstacle_height_for = listObstacleHeight[i]
+# Identify corners and store them as nodes
+counter = 0
+for coord in listOfCoordinates:
+     x = coord['x']
+     y = coord['y']
+     obstacle_width_for = listObstacleWidth[counter]
+     obstacle_height_for = listObstacleHeight[counter]
+     counter = counter + 1
      if area[x-1][y-1] == 0:
          graph_nodes.append((x-1, y-1))
      if area[x-1][y+obstacle_height_for] == 0:
@@ -127,6 +129,7 @@ for i in range(num_obstacles):
          graph_nodes.append((x+obstacle_width_for, y-1))
      if area[x+obstacle_width_for][y+obstacle_height_for] == 0:
          graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
+
 
 # Set the start point to the top-left corner and end point to the bottom-right corner
 start_point = (1, 1)

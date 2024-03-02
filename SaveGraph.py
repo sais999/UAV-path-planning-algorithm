@@ -39,7 +39,7 @@ safety = 5
 
 # Store the nodes in a list
 graph_nodes = []
-
+obstacleId = 1
 listOfCoordinates = []
 listObstacleWidth = []
 listObstacleHeight = []
@@ -56,9 +56,13 @@ for _ in range(num_obstacles):
     y = np.random.randint(0, area_size - obstacle_height)
     nodeCoordinates['x'] = x
     nodeCoordinates['y'] = y
+    nodeCoordinates['id'] = obstacleId
+    obstacleId = obstacleId + 1
     listOfCoordinates.append(nodeCoordinates)
 
+
     area[x:x + obstacle_width, y:y + obstacle_height] = 1
+    #area[x][y] = 2
 
 # Set the start point to the top-left corner and end point to the bottom-right corner
 start_point = (1, 1)
@@ -70,7 +74,7 @@ G = nx.Graph()
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 
 # Folder path to save graphs
-folder_path = 'Graphs/Graph5' #SOSOS SET THE PATH
+folder_path = 'Graphs/Graph1' #SOSOS SET THE PATH
 os.makedirs(folder_path, exist_ok=True)
 
 # Save the graph
@@ -93,11 +97,17 @@ obstacle_height_file_path = os.path.join(folder_path,'obstacle_height.txt')
 with open(obstacle_height_file_path, 'w') as f:
     for height in listObstacleHeight:
         f.write(f"{height},\n")
+
+#Save the list of Obstacle id's
+obstacle_id_file_path = os.path.join(folder_path,'obstacle_id.txt')
+with open(obstacle_id_file_path, 'w') as f:
+    for id in listOfCoordinates:
+        f.write(f"{id['id']},\n")
 # Save the array to a file
 print(listObstacleWidth)
 print(listObstacleHeight)
 print(listOfCoordinates)
-np.save('Graphs/Graph5/area.npy', area) #SOSOS SET THE PATH
+np.save('Graphs/Graph1/area.npy', area) #SOSOS SET THE PATH
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
 

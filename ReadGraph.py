@@ -111,13 +111,14 @@ with open(file_path, 'r') as f:
 
 # Print the list of obstacle heights
 print(listObstacleWidth)
-
- # Identify corners and store them as nodes
-for i in range(num_obstacles):
-     x = listOfCoordinates[i]['x']
-     y = listOfCoordinates[i]['y']
+# Identify corners and store them as nodes
+i = 0
+for coord in listOfCoordinates:
+     x = coord['x']
+     y = coord['y']
      obstacle_width_for = listObstacleWidth[i]
      obstacle_height_for = listObstacleHeight[i]
+     i = i + 1
      if area[x-1][y-1] == 0:
          graph_nodes.append((x-1, y-1))
      if area[x-1][y+obstacle_height_for] == 0:
@@ -126,6 +127,7 @@ for i in range(num_obstacles):
          graph_nodes.append((x+obstacle_width_for, y-1))
      if area[x+obstacle_width_for][y+obstacle_height_for] == 0:
          graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
+
 
 # Set the start point to the top-left corner and end point to the bottom-right corner
 start_point = (1, 1)
