@@ -46,11 +46,11 @@ def is_valid_edge(edge, area):
 #    return [all_nodes[i] for i in sorted_indices[:n]]
 
 # Create a 100x100 area
-area_size = 100
+area_size = 200
 area = np.zeros((area_size, area_size), dtype=int)
 
 # Add random rectangle obstacles
-num_obstacles = 25
+num_obstacles = 45
 min_obstacle_size = 5
 max_obstacle_size = 20
 safety = 2 #safety distance from every obstacle
