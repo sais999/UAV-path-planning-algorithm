@@ -46,8 +46,14 @@ def is_valid_edge(edge, area):
 graph_file_path = 'Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
-# Create a 100x100 area
-area_size = 100
+# Create the area
+file_path = 'Graphs/Graph1/area_size.txt'
+# Read the file and extract obstacle heights
+with open(file_path, 'r') as f:
+    for line in f:
+        # Remove trailing comma and convert to integer
+        area_size = int(line.strip())
+
 area = np.zeros((area_size, area_size), dtype=int)
 graph_nodes = []
 
@@ -130,7 +136,14 @@ for coord in listOfCoordinates:
      if area[x+obstacle_width_for][y+obstacle_height_for] == 0:
          graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
 
+# Get available space nodes (outside obstacles)
+available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
+# Select random start (A) and end (B) points from available space nodes
+#start_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#start_point = available_space_nodes[start_point]
+#end_point = available_space_nodes[end_point]
 # Set the start point to the top-left corner and end point to the bottom-right corner
 start_point = (1, 1)
 end_point = (area_size - 2, area_size - 2)

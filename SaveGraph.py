@@ -28,13 +28,13 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
     plt.show()
 
 # Create a 100x100 area
-area_size = 100
+area_size = 500
 area = np.zeros((area_size, area_size), dtype=int)
 
 # Add random rectangle obstacles
-num_obstacles = 25
-min_obstacle_size = 5
-max_obstacle_size = 15
+num_obstacles = 45
+min_obstacle_size = 15
+max_obstacle_size = 35
 safety = 5
 
 # Store the nodes in a list
@@ -86,6 +86,12 @@ coordinates_file_path = os.path.join(folder_path, 'coordinates.txt')
 with open(coordinates_file_path, 'w') as f:
     for coord in listOfCoordinates:
         f.write(f"x: {coord['x']}, y: {coord['y']}\n")
+
+# Save the list of obstacle widths
+area_size_file_path = os.path.join(folder_path,'area_size.txt')
+with open(area_size_file_path, 'w') as f:
+    f.write(f"{area_size}\n")
+
 # Save the list of obstacle widths
 obstacle_width_file_path = os.path.join(folder_path,'obstacle_width.txt')
 with open(obstacle_width_file_path, 'w') as f:
