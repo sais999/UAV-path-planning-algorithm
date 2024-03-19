@@ -2,7 +2,7 @@ import numpy as np
 import networkx as nx
 import os
 import matplotlib.pyplot as plt
-
+import time
 #function to display graph, obstacles, nodes, start and end points, and shortest path
 def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black', 'red'])
@@ -36,7 +36,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 #function to check if an edge is on the available space
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
-    for point in np.linspace(edge[0], edge[1], num=5000):
+    for point in np.linspace(edge[0], edge[1], num=500):
         x, y = map(int, point)
         if area[x, y] == 1:
             return False
@@ -98,7 +98,7 @@ with open(file_path, 'r') as f:
 area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 # Print the list of obstacle heights
 print(listObstacleHeight)
-
+print(area_size)
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
@@ -118,7 +118,7 @@ with open(file_path, 'r') as f:
 
 # Print the list of obstacle heights
 print(listObstacleWidth)
-
+start_time = time.time()
 # Identify corners and store them as nodes
 counter = 0
 for coord in listOfCoordinates:
@@ -172,9 +172,15 @@ for i, node in enumerate(graph_nodes):
 shortest_path = None
 try:
     shortest_path = nx.shortest_path(G, source=start_point, target=end_point, weight='weight')
+    # Calculate the length of the shortest path
+    shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point, weight='weight')
+    print(f"Length of the shortest path: {shortest_path_length}")
 except nx.NetworkXNoPath:
     print("No valid path found. Please try again with different obstacle distribution.")
-
+end_time = time.time()
+# Calculate the total time taken
+total_time = end_time - start_time
+print(f"Total execution time: {total_time} seconds")
 # Extract nodes and edges for visualization
 graph_nodes = list(G.nodes())
 graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]

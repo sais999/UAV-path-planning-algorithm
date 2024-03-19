@@ -32,8 +32,8 @@ area_size = 500
 area = np.zeros((area_size, area_size), dtype=int)
 
 # Add random rectangle obstacles
-num_obstacles = 45
-min_obstacle_size = 15
+num_obstacles = 55
+min_obstacle_size = 35
 max_obstacle_size = 35
 safety = 5
 
