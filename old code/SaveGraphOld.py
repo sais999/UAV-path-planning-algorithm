@@ -74,7 +74,7 @@ G = nx.Graph()
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 
 # Folder path to save graphs
-folder_path = 'Graphs/Graph1' #SOSOS SET THE PATH
+folder_path = '../Graphs/Graph1'  #SOSOS SET THE PATH
 os.makedirs(folder_path, exist_ok=True)
 
 # Save the graph
@@ -113,7 +113,7 @@ with open(obstacle_id_file_path, 'w') as f:
 print(listObstacleWidth)
 print(listObstacleHeight)
 print(listOfCoordinates)
-np.save('Graphs/Graph1/area.npy', area) #SOSOS SET THE PATH
+np.save('../Graphs/Graph1/area.npy', area) #SOSOS SET THE PATH
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point)
 

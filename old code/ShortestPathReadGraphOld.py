@@ -3,6 +3,7 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt
 import time
+#function to display graph, obstacles, nodes, start and end points, and shortest path
 def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black', 'red'])
     bounds = [0, 1, 2, 3]
@@ -32,34 +33,32 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 
     plt.show()
 
-def is_valid_edge(edge, area,):  # Reduced from 500 to 100
-    for point in np.linspace(edge[0], edge[1], num=100):
+#function to check if an edge is on the available space
+def is_valid_edge(edge, area):
+    # Check if the edge overlaps with obstacles
+    for point in np.linspace(edge[0], edge[1], num=500):
         x, y = map(int, point)
         if area[x, y] == 1:
             return False
     return True
-def get_closest_nodes(current_node, all_nodes, n):
-    distances = [np.linalg.norm(np.array(current_node) - np.array(node)) for node in all_nodes]
-    sorted_indices = np.argsort(distances)
-    return [all_nodes[i] for i in sorted_indices[:n]]
 
 # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph1/graph.gexf'
+graph_file_path = '../Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
-file_path = 'Graphs/Graph1/area_size.txt'
-# Read the file and extract obstacle heights
+# Create the area
+file_path = '../Graphs/Graph1/area_size.txt'
+# Read the file and extract area size
 with open(file_path, 'r') as f:
     for line in f:
-        # Remove trailing comma and convert to integer
+
         area_size = int(line.strip())
 
 area = np.zeros((area_size, area_size), dtype=int)
 graph_nodes = []
 
-
 # File path
-file_path = 'Graphs/Graph1/coordinates.txt'
+file_path = 'Graphs/Graph1/coordinates.txt'  #SOSOS SET THE PATH
 
 # List to store coordinates
 listOfCoordinates = []
@@ -82,7 +81,7 @@ with open(file_path, 'r') as f:
             # Append to the list
             listOfCoordinates.append(nodeCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_height.txt'
+file_path = 'Graphs/Graph1/obstacle_height.txt'  #SOSOS SET THE PATH
 
 # List to store obstacle heights
 listObstacleHeight = []
@@ -96,14 +95,14 @@ with open(file_path, 'r') as f:
         # Append to the list
         listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
-area = np.load('Graphs/Graph1/area.npy')
+area = np.load('../Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 # Print the list of obstacle heights
 print(listObstacleHeight)
-
+print(area_size)
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_width.txt'
+file_path = 'Graphs/Graph1/obstacle_width.txt'  #SOSOS SET THE PATH LAST
 
 # List to store obstacle heights
 listObstacleWidth = []
@@ -119,53 +118,62 @@ with open(file_path, 'r') as f:
 
 # Print the list of obstacle heights
 print(listObstacleWidth)
+start_time = time.time()
 # Identify corners and store them as nodes
-i = 0
+counter = 0
+for coord in listOfCoordinates:
+     x = coord['x']
+     y = coord['y']
+     obstacle_width_for = listObstacleWidth[counter]
+     obstacle_height_for = listObstacleHeight[counter]
+     counter = counter + 1
+     if area[x-1][y-1] == 0:
+         graph_nodes.append((x-1, y-1))
+     if area[x-1][y+obstacle_height_for] == 0:
+         graph_nodes.append((x-1, y+obstacle_height_for))
+     if area[x+obstacle_width_for][y-1] == 0:
+         graph_nodes.append((x+obstacle_width_for, y-1))
+     if area[x+obstacle_width_for][y+obstacle_height_for] == 0:
+         graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
+
 # Get available space nodes (outside obstacles)
 available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
-
-start_time = time.time()
+# Select random start (A) and end (B) points from available space nodes
+#start_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#start_point = available_space_nodes[start_point]
+#end_point = available_space_nodes[end_point]
 # Set the start point to the top-left corner and end point to the bottom-right corner
 start_point = (1, 1)
 end_point = (area_size - 2, area_size - 2)
-path = 0
-
-num_nodes = 200 #set the number of nodes
-#create random points
-for i in range(num_nodes):
-    random_index = np.random.choice(len(available_space_nodes))
-    random_point = available_space_nodes[random_index]
-    graph_nodes.append(random_point)
-
-
-# Connect the edges to multiple nearby nodes
-n_connections = num_nodes# Adjust based on desired connectivity
-for random_node in graph_nodes:
-    closest_random_nodes = get_closest_nodes(random_node, graph_nodes, n=n_connections)
-    for target_node in closest_random_nodes:
-        edge = (random_node, target_node)
-        if is_valid_edge(edge, area):
-            G.add_edge(tuple(random_node), tuple(target_node),
-                       weight=np.linalg.norm(np.array(random_node) - np.array(target_node)))
+G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)
 G.add_node(end_point)
 
-# Connect start and end points to the graph
-closest_start_nodes = get_closest_nodes(start_point, graph_nodes, n_connections)
-closest_end_nodes = get_closest_nodes(end_point, graph_nodes, n_connections)
+graph_nodes.append(start_point)
+graph_nodes.append(end_point)
+# set threshold for the distance of a possible edge
+threshold = 2 * area_size
+# Connect nodes based on distance and add weights
+for i, node in enumerate(graph_nodes):
+    for j in range(i+1, len(graph_nodes)):
+        other_node = graph_nodes[j]
+        distance = np.linalg.norm(np.array(node) - np.array(other_node))
+        edge = np.array([node, other_node])
+        # set threshold for the distance of a possible edge
+        if distance < threshold and is_valid_edge(edge, area):
+            G.add_edge(tuple(node), tuple(other_node), weight=distance)  # Convert nodes to tuples
 
-G.add_edge(start_point, tuple(closest_start_nodes[0]), weight=np.linalg.norm(np.array(start_point) - np.array(closest_start_nodes[0])))
-G.add_edge(end_point, tuple(closest_end_nodes[0]), weight=np.linalg.norm(np.array(end_point) - np.array(closest_end_nodes[0])))
+
 
 # Find the shortest path using Dijkstra's algorithm
 shortest_path = None
 try:
     shortest_path = nx.shortest_path(G, source=start_point, target=end_point, weight='weight')
     # Calculate the length of the shortest path
-    shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point,
-                                                                   weight='weight')
+    shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point, weight='weight')
     print(f"Length of the shortest path: {shortest_path_length}")
 except nx.NetworkXNoPath:
     print("No valid path found. Please try again with different obstacle distribution.")
@@ -173,6 +181,9 @@ end_time = time.time()
 # Calculate the total time taken
 total_time = end_time - start_time
 print(f"Total execution time: {total_time} seconds")
-G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
+# Extract nodes and edges for visualization
+graph_nodes = list(G.nodes())
+graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]
+
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)

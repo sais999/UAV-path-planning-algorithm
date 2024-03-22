@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import time
 #function to display graph, obstacles, nodes, start and end points, and shortest path
 def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
-    cmap = plt.cm.colors.ListedColormap(['white', 'black', 'red'])
-    bounds = [0, 1, 2, 3]
+    cmap = plt.cm.colors.ListedColormap(['white', 'black'])
+    bounds = [0, 1]
     norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
 
     plt.imshow(array_2d, cmap=cmap, norm=norm, interpolation='none')
@@ -38,94 +38,62 @@ def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
     for point in np.linspace(edge[0], edge[1], num=500):
         x, y = map(int, point)
-        if area[x, y] == 1:
+        if area[x, y] != 0:
             return False
     return True
 
-# Read the graph from graph.gexf
+ # Read the graph from graph.gexf
 graph_file_path = 'Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
-num_obstacles = 25
+#num_obstacles = 25
 # Create the area
 file_path = 'Graphs/Graph1/area_size.txt'
-# Read the file and extract obstacle heights
+# Read the file and extract area size
 with open(file_path, 'r') as f:
     for line in f:
-        # Remove trailing comma and convert to integer
+
         area_size = int(line.strip())
 
 area = np.zeros((area_size, area_size), dtype=int)
 graph_nodes = []
 
 # File path
-file_path = 'Graphs/Graph1/coordinates.txt'  #SOSOS SET THE PATH
+file_path = 'Graphs/Graph1/obstacles.txt'  # Update the path if necessary
 
-# List to store coordinates
-listOfCoordinates = []
+# List to store obstacles
+listOfObstacles = []
 
-# Read the file and extract coordinates
+# Read the file and extract obstacle data
 with open(file_path, 'r') as f:
     for line in f:
         # Split the line into parts
         parts = line.strip().split(', ')
+        obstacle = {}
 
-        # Ensure the line has the expected format
-        if len(parts) == 2:
-            # Extract x and y values
-            x = int(parts[0][2:])
-            y = int(parts[1][2:])
+        # Process each part of the line to extract obstacle data
+        for part in parts:
+            key, value = part.split(": ")
+            obstacle[key] = int(value)  # Convert values to integers
 
-            # Create a dictionary for each coordinate
-            nodeCoordinates = {'x': x, 'y': y}
+        # Append the obstacle dictionary to the list
+        listOfObstacles.append(obstacle)
 
-            # Append to the list
-            listOfCoordinates.append(nodeCoordinates)
-# File path
-file_path = 'Graphs/Graph1/obstacle_height.txt' #SOSOS SET THE PATH
+# The listOfObstacles now contains dictionaries with full obstacle data
+print(listOfObstacles)
 
-# List to store obstacle heights
-listObstacleHeight = []
 
-# Read the file and extract obstacle heights
-with open(file_path, 'r') as f:
-    for line in f:
-        # Remove trailing comma and convert to integer
-        obstacle_height = int(line.strip().rstrip(','))
-
-        # Append to the list
-        listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
 area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
-# Print the list of obstacle heights
-print(listObstacleHeight)
 print(area_size)
-# Print the list of coordinates
-print(listOfCoordinates)
-# File path
-file_path = 'Graphs/Graph1/obstacle_width.txt' #SOSOS SET THE PATH LAST
 
-# List to store obstacle heights
-listObstacleWidth = []
-
-# Read the file and extract obstacle heights
-with open(file_path, 'r') as f:
-    for line in f:
-        # Remove trailing comma and convert to integer
-        obstacle_width = int(line.strip().rstrip(','))
-
-        # Append to the list
-        listObstacleWidth.append(obstacle_width)
-
-# Print the list of obstacle heights
-print(listObstacleWidth)
 start_time = time.time()
 # Identify corners and store them as nodes
 counter = 0
-for coord in listOfCoordinates:
-     x = coord['x']
-     y = coord['y']
-     obstacle_width_for = listObstacleWidth[counter]
-     obstacle_height_for = listObstacleHeight[counter]
+for obstacle in listOfObstacles:
+     x = obstacle['x']
+     y = obstacle['y']
+     obstacle_width_for = obstacle['width']
+     obstacle_height_for = obstacle['height']
      counter = counter + 1
      if area[x-1][y-1] == 0:
          graph_nodes.append((x-1, y-1))

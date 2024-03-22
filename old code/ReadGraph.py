@@ -27,10 +27,10 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
     plt.show()
 
 # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph1/graph.gexf'
+graph_file_path = '../Graphs/Graph1/graph.gexf'
 G = nx.read_gexf(graph_file_path)
 num_obstacles = 25
-file_path = 'Graphs/Graph1/area_size.txt'
+file_path = '../Graphs/Graph1/area_size.txt'
 # Read the file and extract obstacle heights
 with open(file_path, 'r') as f:
     for line in f:
@@ -56,7 +56,7 @@ graph_nodes = []
 # print(area)
 
 # File path
-file_path = 'Graphs/Graph1/coordinates.txt'
+file_path = '../Graphs/Graph1/coordinates.txt'
 
 # List to store coordinates
 listOfCoordinates = []
@@ -79,7 +79,7 @@ with open(file_path, 'r') as f:
             # Append to the list
             listOfCoordinates.append(nodeCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_height.txt'
+file_path = '../Graphs/Graph1/obstacle_height.txt'
 
 # List to store obstacle heights
 listObstacleHeight = []
@@ -93,14 +93,14 @@ with open(file_path, 'r') as f:
         # Append to the list
         listObstacleHeight.append(obstacle_height)
 # Load the array back from the file
-area = np.load('Graphs/Graph1/area.npy')
+area = np.load('../Graphs/Graph1/area.npy')
 # Print the list of obstacle heights
 print(listObstacleHeight)
 
 # Print the list of coordinates
 print(listOfCoordinates)
 # File path
-file_path = 'Graphs/Graph1/obstacle_width.txt'
+file_path = '../Graphs/Graph1/obstacle_width.txt'
 
 # List to store obstacle heights
 listObstacleWidth = []
