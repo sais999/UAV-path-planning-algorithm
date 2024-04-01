@@ -99,7 +99,7 @@ start_point = (1, 1)
 end_point = (area_size - 2, area_size - 2)
 path = 0
 
-num_nodes = 200 #set the number of nodes
+num_nodes = 600 #set the number of nodes
 #create random points
 for i in range(num_nodes):
     random_index = np.random.choice(len(available_space_nodes))

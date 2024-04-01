@@ -21,24 +21,24 @@ def is_overlapping(new_obstacle, obstacles):
             return True
     return False
 
-max_attempts_per_obstacle = 1000  # Maximum attempts to place each obstacle
+max_attempts_per_obstacle = 100  # Maximum attempts to place each obstacle
 
 # Create a 500x500 area
-area_size = 500
+area_size = 1000
 area = np.zeros((area_size, area_size), dtype=int)
 
 # Add random rectangle obstacles
-num_obstacles = 50
-min_obstacle_size = 70
-max_obstacle_size = 80
+num_obstacles = 500
+min_obstacle_size = 5
+max_obstacle_size = 900
 safety_margin = 5
 
 listOfObstacles = []
 
 for _ in range(num_obstacles):
     for attempt in range(max_attempts_per_obstacle):
-        obstacle_width = np.random.randint(min_obstacle_size, max_obstacle_size + 1)
-        obstacle_height = np.random.randint(min_obstacle_size, max_obstacle_size + 1)
+        obstacle_width = np.random.randint(min_obstacle_size, max_obstacle_size + 1) + safety_margin
+        obstacle_height = np.random.randint(min_obstacle_size, max_obstacle_size + 1) + safety_margin
         x = np.random.randint(0, area_size - obstacle_width)
         y = np.random.randint(0, area_size - obstacle_height)
 

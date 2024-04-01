@@ -82,41 +82,48 @@ def get_closest_nodes(current_node, all_nodes, n):
     sorted_indices = np.argsort(distances)
     return [all_nodes[i] for i in sorted_indices[:n]]
 
-def get_temp_nodes(obstacle, area):
+def get_temp_nodes(listOfObstacles, area):
     counter = 0
     graph_nodes = []
-
-    x = obstacle['x']
-    y = obstacle['y']
-    obstacle_width_for = obstacle['width']
-    obstacle_height_for = obstacle['height']
-    counter = counter + 1
-    if area[x - 1][y - 1] == 0:
-        graph_nodes.append((x - 1, y - 1))
-    if area[x - 1][y + obstacle_height_for] == 0:
-        graph_nodes.append((x - 1, y + obstacle_height_for))
-    if area[x + obstacle_width_for][y - 1] == 0:
-        graph_nodes.append((x + obstacle_width_for, y - 1))
-    if area[x + obstacle_width_for][y + obstacle_height_for] == 0:
-        graph_nodes.append((x + obstacle_width_for, y + obstacle_height_for))
+    for obstacle in listOfObstacles:
+        x = obstacle['x']
+        y = obstacle['y']
+        obstacle_width_for = obstacle['width']
+        obstacle_height_for = obstacle['height']
+        counter = counter + 1
+        if area[x - 1][y - 1] == 0:
+            graph_nodes.append((x - 1, y - 1))
+        if area[x - 1][y + obstacle_height_for] == 0:
+            graph_nodes.append((x - 1, y + obstacle_height_for))
+        if area[x + obstacle_width_for][y - 1] == 0:
+            graph_nodes.append((x + obstacle_width_for, y - 1))
+        if area[x + obstacle_width_for][y + obstacle_height_for] == 0:
+            graph_nodes.append((x + obstacle_width_for, y + obstacle_height_for))
     return graph_nodes
 
-def add_node(node):
+def add_node_to_graph(node):
     if node not in unique_graph_nodes_set:
         unique_graph_nodes_set.add(node)
         graph_nodes.append(node)
+def add_node_to_candidate(node):
+    if node not in unique_candidate_nodes_set:
+        unique_candidate_nodes_set.add(node)
+        candidate_nodes_list.append(node)
+def add_node_to_final(node):
+    if node not in unique_final_nodes_set:
+        unique_final_nodes_set.add(node)
+        final_nodes_list.append(node)
 def add_new_obstacle_found(obstacle):
     obstacle_id = obstacle['id']  # Use the unique ID of the obstacle
     if obstacle_id not in unique_obstacles_found_set:
         unique_obstacles_found_set.add(obstacle_id)
         obstacles_found.append(obstacle)
-
  # Read the graph from graph.gexf
-graph_file_path = 'Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
+graph_file_path = '../Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
 G = nx.read_gexf(graph_file_path)
 #num_obstacles = 25
 # Create the area
-file_path = 'Graphs/Graph1/area_size.txt'
+file_path = '../Graphs/Graph1/area_size.txt'
 # Read the file and extract area size
 with open(file_path, 'r') as f:
     for line in f:
@@ -127,7 +134,7 @@ area = np.zeros((area_size, area_size), dtype=int)
 
 
 # File path
-file_path = 'Graphs/Graph1/obstacles.txt'  # Update the path if necessary
+file_path = '../Graphs/Graph1/obstacles.txt'  # Update the path if necessary
 
 # List to store obstacles
 listOfObstacles = []
@@ -152,11 +159,12 @@ print(listOfObstacles)
 
 
 # Load the array back from the file
-area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
+area = np.load('../Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 print(area_size)
 unique_graph_nodes_set = set()
+unique_final_nodes_set = set()
+unique_candidate_nodes_set = set()
 unique_obstacles_found_set = set()
-
 graph_nodes = []
 temp_nodes = []
 obstacles_found = []
@@ -175,60 +183,81 @@ obstacles_found_id = []
 # Set the start point to the top-left corner and end point to the bottom-right corner
 #start_point = (1, 1)
 #end_point = (area_size - 2, area_size - 2)
-start_point = (area_size/2 , 1)
-end_point = (area_size/2, area_size - 2)
+start_point = (250, 1)
+end_point = (250, area_size - 2)
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)
 G.add_node(end_point)
 nodes = []
+final_nodes_list = []
+candidate_nodes_list = []
+final_nodes_list.append(start_point)
+candidate_nodes_list.append(end_point)
 #START OF THE ALGORITHM
-add_node(start_point)
+add_node_to_graph(start_point)
 #graph_nodes.append(end_point)
 start_time = time.time()
+obstacles_found_id_list = []
 pathCreated = False
 while pathCreated==False:
-    nodes = []
-    for node in graph_nodes:
-        temp_nodes.clear()
-        edge_front = (node, end_point)
-        edge_back = (node, start_point)
-        if get_obstacle_collided_id(edge_front, area) == -1:
-            pathCreated = True
-            for node in temp_nodes:
-                add_node(node)
-            break
+    if not candidate_nodes_list:  # Check if candidate_nodes_list is empty
+        print("Candidate nodes list is empty. No path could be found.")
+        break  # Exit the loop since there are no more nodes to process
 
+    O = final_nodes_list[-1]  # No need to use len()-1, just -1 works
+    #final_nodes_list.pop()
+    O = start_point
+    D = candidate_nodes_list[-1]
+    edge = (O, D)
+    print(edge)
+    if D == end_point and get_obstacle_collided_id(edge, area)==-1: #einai to teliko simio kai den exei sigkrousi
+        pathCreated = True
+        print("i am in if 1")
+        # for node in temp_nodes:
+        #     add_node(node)
+        # break
+    elif D == end_point and get_obstacle_collided_id(edge, area)!=-1: #einai to teliko simio kai exei sigkrousi
+        obstacles_collided_id = get_obstacle_collided_id(edge, area)
+        print("i am in if 2")
+        if obstacles_collided_id not in unique_obstacles_found_set:
+            add_new_obstacle_found(get_obstacle(listOfObstacles, obstacles_collided_id))
+            nodes = get_temp_nodes(obstacles_found, area)
 
+            for node in nodes:
+                add_node_to_candidate(node)
+                add_node_to_graph(node)
+            nodes.clear()
         else:
-            if get_obstacle_collided_id(edge_back,area) != -1:
+            add_node_to_final(D)
+            #candidate_nodes_list.pop()
+            print("This obstacle already exists")
+    elif D != end_point and get_obstacle_collided_id(edge, area)==-1:#den einai to teliko simio kai den exei sigkrousi
+        add_node_to_final(D)
+        candidate_nodes_list.pop()
+        print("i am in if 3")
+    elif D!= end_point and get_obstacle_collided_id(edge,area)!= -1: # den einai to teliko simio kai exei sigkrousi
+        obstacles_collided_id = get_obstacle_collided_id(edge, area)
+        print("i am in if 4")
+        if obstacles_collided_id not in unique_obstacles_found_set:
+            add_new_obstacle_found(get_obstacle(listOfObstacles, obstacles_collided_id))
+            nodes = get_temp_nodes(obstacles_found, area)
 
-                obstacle_back = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge_back, area))
-
-                if obstacle_back['id'] not in unique_obstacles_found_set:
-                    nodes = get_temp_nodes(obstacle_back, area)
-                    for node in nodes:
-                        temp_nodes.append(node)
-                    nodes.clear()
-                    for node in temp_nodes:
-                        add_node(node)
-                    add_new_obstacle_found(obstacle_back)
-            obstacle_front = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge_front, area))
+            for node in nodes:
+                add_node_to_candidate(node)
+                add_node_to_graph(node)
+            nodes.clear()
+        else:
+            add_node_to_final(D)
+            candidate_nodes_list.pop()
+            print("This obstacle already exists")
 
 
-            if obstacle_front['id'] not in unique_obstacles_found_set:
-                nodes = get_temp_nodes(obstacle_front, area)
-                for node in nodes:
-                    temp_nodes.append(node)
-                nodes.clear()
-                for node in temp_nodes:
-                    add_node(node)
-                add_new_obstacle_found(obstacle_front)
 
-            #print(temp_nodes)
-            #print(graph_nodes)
 
-add_node(end_point)
+
+
+add_node_to_graph(end_point)
 threshold = area_size*2
 # Connect nodes based on distance and add weights
 for i, node in enumerate(graph_nodes):

@@ -3,8 +3,35 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt
 import time
-#function to display graph, obstacles, nodes, start and end points, and shortest path
 def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
+    cmap = plt.cm.colors.ListedColormap(['white', 'black'])
+    bounds = [0, 1]
+    norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
+
+    plt.imshow(array_2d, cmap=cmap, norm=norm, interpolation='none')
+
+    # Plot graph nodes
+    for node in graph_nodes:
+        plt.plot(node[1], node[0], 'go', markersize=5)  # Green dots for graph nodes
+
+    # Plot start and end points
+    plt.plot(start_point[1], start_point[0], 'bo', markersize=8, label='Start (A)')
+    plt.plot(end_point[1], end_point[0], 'yo', markersize=8, label='End (B)')
+
+     # Plot the path
+    if path:
+        path_nodes = np.array(path)
+        plt.plot(path_nodes[:, 1], path_nodes[:, 0], 'r-', linewidth=2, label='Shortest Path (A to B)')
+
+    # Show legend
+    #plt.legend()
+
+    # Show colorbar
+    cbar = plt.colorbar(ticks=[0, 1, 2])
+    cbar.set_label('Color', rotation=270, labelpad=15)
+
+    plt.show()
+def display_array_with_graph_and_path_with_edges(array_2d, graph_nodes, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black'])
     bounds = [0, 1]
     norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
@@ -25,7 +52,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
         plt.plot(path_nodes[:, 1], path_nodes[:, 0], 'r-', linewidth=2, label='Shortest Path (A to B)')
 
     # Show legend
-    #plt.legend()
+    plt.legend()
 
     # Show colorbar
     cbar = plt.colorbar(ticks=[0, 1, 2])
@@ -33,14 +60,52 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 
     plt.show()
 
-#function to check if an edge is on the available space
+def get_obstacle_collided_id(edge, area):
+    for point in np.linspace(edge[0], edge[1], num=100):
+        x, y = map(int, point)
+        if area[x, y] != 0:
+            return area[x,y]
+    return -1
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
-    for point in np.linspace(edge[0], edge[1], num=500):
+    for point in np.linspace(edge[0], edge[1], num=100):
         x, y = map(int, point)
         if area[x, y] != 0:
             return False
     return True
+def get_obstacle(listOfObstacles, id):
+    for obstacle in listOfObstacles:
+        if obstacle['id']==id:
+            return obstacle
+def get_closest_nodes(current_node, all_nodes, n):
+    distances = [np.linalg.norm(np.array(current_node) - np.array(node)) for node in all_nodes]
+    sorted_indices = np.argsort(distances)
+    return [all_nodes[i] for i in sorted_indices[:n]]
+
+def get_temp_nodes(listOfObstacles, area):
+    counter = 0
+    graph_nodes = []
+    for obstacle in listOfObstacles:
+        x = obstacle['x']
+        y = obstacle['y']
+        obstacle_width_for = obstacle['width']
+        obstacle_height_for = obstacle['height']
+        counter = counter + 1
+        if area[x - 1][y - 1] == 0:
+            graph_nodes.append((x - 1, y - 1))
+        if area[x - 1][y + obstacle_height_for] == 0:
+            graph_nodes.append((x - 1, y + obstacle_height_for))
+        if area[x + obstacle_width_for][y - 1] == 0:
+            graph_nodes.append((x + obstacle_width_for, y - 1))
+        if area[x + obstacle_width_for][y + obstacle_height_for] == 0:
+            graph_nodes.append((x + obstacle_width_for, y + obstacle_height_for))
+    return graph_nodes
+
+def add_node(node):
+    if node not in unique_graph_nodes_set:
+        unique_graph_nodes_set.add(node)
+        graph_nodes.append(node)
+
 
  # Read the graph from graph.gexf
 graph_file_path = 'Graphs/Graph1/graph.gexf'  #SOSOS SET THE PATH
@@ -55,7 +120,7 @@ with open(file_path, 'r') as f:
         area_size = int(line.strip())
 
 area = np.zeros((area_size, area_size), dtype=int)
-graph_nodes = []
+
 
 # File path
 file_path = 'Graphs/Graph1/obstacles.txt'  # Update the path if necessary
@@ -85,27 +150,16 @@ print(listOfObstacles)
 # Load the array back from the file
 area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 print(area_size)
+unique_graph_nodes_set = set()
+graph_nodes = []
+temp_nodes = []
+obstacles_found = []
+obstacles_found_id = []
 
-start_time = time.time()
 # Identify corners and store them as nodes
-counter = 0
-for obstacle in listOfObstacles:
-     x = obstacle['x']
-     y = obstacle['y']
-     obstacle_width_for = obstacle['width']
-     obstacle_height_for = obstacle['height']
-     counter = counter + 1
-     if area[x-1][y-1] == 0:
-         graph_nodes.append((x-1, y-1))
-     if area[x-1][y+obstacle_height_for] == 0:
-         graph_nodes.append((x-1, y+obstacle_height_for))
-     if area[x+obstacle_width_for][y-1] == 0:
-         graph_nodes.append((x+obstacle_width_for, y-1))
-     if area[x+obstacle_width_for][y+obstacle_height_for] == 0:
-         graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
 
 # Get available space nodes (outside obstacles)
-available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
+#vailable_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
 # Select random start (A) and end (B) points from available space nodes
 #start_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
@@ -117,16 +171,51 @@ available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(
 #end_point = (area_size - 2, area_size - 2)
 start_point = (area_size/2, 1)
 end_point = (area_size/2, area_size - 2)
-
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)
 G.add_node(end_point)
+nodes = []
+#START OF THE ALGORITHM
+add_node(start_point)
+#graph_nodes.append(end_point)
+start_time = time.time()
+pathCreated = False
+while pathCreated==False:
+    nodes = []
+    for node in graph_nodes:
+        temp_nodes.clear()
+        edge = (node, end_point)
+        if get_obstacle_collided_id(edge, area) == -1:
+            pathCreated = True
+            for node in temp_nodes:
+                add_node(node)
+            break
 
-graph_nodes.append(start_point)
-graph_nodes.append(end_point)
-# set threshold for the distance of a possible edge
-threshold = 2 * area_size
+        # edge2 = (node, start_point)
+        # if get_obstacle_collided_id(edge2, area) == -1:
+        #     pathCreated = True
+        #     for node in temp_nodes:
+        #         add_node(node)
+        #     break
+        else:
+            obstacle_collided_id = get_obstacle_collided_id(edge, area)
+
+            obstacles_found.append(get_obstacle(listOfObstacles, obstacle_collided_id))
+            #print(get_obstacle(listOfObstacles, obstacle_collided_id))
+
+            nodes = get_temp_nodes(obstacles_found, area)
+            for node in nodes:
+                temp_nodes.append(node)
+            nodes.clear()
+            for node in temp_nodes:
+                add_node(node)
+
+            #print(temp_nodes)
+            #print(graph_nodes)
+
+add_node(end_point)
+threshold = area_size*2
 # Connect nodes based on distance and add weights
 for i, node in enumerate(graph_nodes):
     for j in range(i+1, len(graph_nodes)):
@@ -148,13 +237,16 @@ try:
     print(f"Length of the shortest path: {shortest_path_length}")
 except nx.NetworkXNoPath:
     print("No valid path found. Please try again with different obstacle distribution.")
+
+
+graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]
 end_time = time.time()
-# Calculate the total time taken
 total_time = end_time - start_time
 print(f"Total execution time: {total_time} seconds")
-# Extract nodes and edges for visualization
-graph_nodes = list(G.nodes())
-graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]
-
-# Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)
+#Display the array with the graph nodes, edges, and the shortest path
+#display_array_with_graph_and_path_with_edges(area, graph_nodes,graph_edges, start_point, end_point, shortest_path)
+
+
+
+
