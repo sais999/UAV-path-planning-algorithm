@@ -105,6 +105,11 @@ def add_node(node):
     if node not in unique_graph_nodes_set:
         unique_graph_nodes_set.add(node)
         graph_nodes.append(node)
+
+def add_back_node(node):
+    if node not in unique_back_nodes_set:
+        unique_back_nodes_set.add(node)
+        back_nodes.append(node)
 def add_new_obstacle_found(obstacle):
     obstacle_id = obstacle['id']  # Use the unique ID of the obstacle
     if obstacle_id not in unique_obstacles_found_set:
@@ -156,11 +161,13 @@ area = np.load('Graphs/Graph1/area.npy') #SOSOS SET THE PATH
 print(area_size)
 unique_graph_nodes_set = set()
 unique_obstacles_found_set = set()
+unique_back_nodes_set = set()
 
 graph_nodes = []
 temp_nodes = []
 obstacles_found = []
 obstacles_found_id = []
+back_nodes = []
 
 # Identify corners and store them as nodes
 
@@ -176,7 +183,7 @@ obstacles_found_id = []
 #start_point = (1, 1)
 #end_point = (area_size - 2, area_size - 2)
 start_point = (area_size/2 , 1)
-end_point = (area_size/2, area_size - 2)
+end_point = (area_size/2, area_size - 1)
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)
@@ -196,7 +203,7 @@ while pathCreated==False:
         if get_obstacle_collided_id(edge_front, area) == -1:
             pathCreated = True
             for node in temp_nodes:
-                add_node(node)
+                add_back_node(node)
             break
 
 
@@ -227,7 +234,8 @@ while pathCreated==False:
 
             #print(temp_nodes)
             #print(graph_nodes)
-
+for node in back_nodes:
+    add_node(node)
 add_node(end_point)
 threshold = area_size*2
 # Connect nodes based on distance and add weights

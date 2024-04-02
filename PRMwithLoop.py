@@ -153,7 +153,7 @@ while path_created == False:
         print(f"Length of the shortest path: {shortest_path_length} on Try: {iterations}")
         path_created = True
     except nx.NetworkXNoPath:
-        print(f"No valid path found. Try : {iterations} ")
+        print(f"No valid path found. Try: {iterations} ")
         iterations = iterations+1
 end_time = time.time()
 # Calculate the total time taken

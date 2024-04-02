@@ -170,7 +170,7 @@ obstacles_found_id = []
 #start_point = (1, 1)
 #end_point = (area_size - 2, area_size - 2)
 start_point = (area_size/2, 1)
-end_point = (area_size/2, area_size - 2)
+end_point = (area_size/2, area_size-1)
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)
