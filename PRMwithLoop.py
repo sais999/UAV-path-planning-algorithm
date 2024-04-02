@@ -100,49 +100,67 @@ start_time = time.time()
 start_point = (area_size/2 , 1)
 end_point = (area_size/2, area_size - 2)
 path = 0
+num_nodes = 0
+path_created = False
+iterations = 1
+temp_nodes = []
+while path_created == False:
+    num_nodes = num_nodes + 50  # set the number of nodes
+    # create random points
+    for i in range(num_nodes):
+        random_index = np.random.choice(len(available_space_nodes))
+        random_point = available_space_nodes[random_index]
+        graph_nodes.append(random_point)
+        temp_nodes.append(random_point)
 
-num_nodes = 600 #set the number of nodes
-#create random points
-for i in range(num_nodes):
-    random_index = np.random.choice(len(available_space_nodes))
-    random_point = available_space_nodes[random_index]
-    graph_nodes.append(random_point)
+    # Connect the edges to multiple nearby nodes
+    n_connections = num_nodes  # Adjust based on desired connectivity
+    for random_node in temp_nodes:
+        closest_random_nodes = get_closest_nodes(random_node, graph_nodes, n=n_connections)
+        for target_node in closest_random_nodes:
+            edge = (random_node, target_node)
+            if is_valid_edge(edge, area):
+                G.add_edge(tuple(random_node), tuple(target_node),
+                           weight=np.linalg.norm(np.array(random_node) - np.array(target_node)))
+    # Add start and end points to the graph
+    G.add_node(start_point)
+    G.add_node(end_point)
 
-
-# Connect the edges to multiple nearby nodes
-n_connections = num_nodes# Adjust based on desired connectivity
-for random_node in graph_nodes:
-    closest_random_nodes = get_closest_nodes(random_node, graph_nodes, n=n_connections)
-    for target_node in closest_random_nodes:
-        edge = (random_node, target_node)
+    # Connect start and end points to the graph
+    closest_start_nodes = get_closest_nodes(start_point, graph_nodes, n_connections)
+    for target_node in closest_start_nodes:
+        edge = (start_point, target_node)
         if is_valid_edge(edge, area):
-            G.add_edge(tuple(random_node), tuple(target_node),
-                       weight=np.linalg.norm(np.array(random_node) - np.array(target_node)))
-# Add start and end points to the graph
-G.add_node(start_point)
-G.add_node(end_point)
+            G.add_edge(start_point, tuple(target_node),
+                       weight=np.linalg.norm(np.array(start_point) - np.array(target_node)))
+    closest_end_nodes = get_closest_nodes(end_point, graph_nodes, n_connections)
+    for target_node in closest_end_nodes:
+        edge = (end_point, target_node)
+        if is_valid_edge(edge, area):
+            G.add_edge(end_point, tuple(target_node),
+                       weight=np.linalg.norm(np.array(end_point) - np.array(target_node)))
 
-# Connect start and end points to the graph
-closest_start_nodes = get_closest_nodes(start_point, graph_nodes, n_connections)
-closest_end_nodes = get_closest_nodes(end_point, graph_nodes, n_connections)
 
-G.add_edge(start_point, tuple(closest_start_nodes[0]), weight=np.linalg.norm(np.array(start_point) - np.array(closest_start_nodes[0])))
-G.add_edge(end_point, tuple(closest_end_nodes[0]), weight=np.linalg.norm(np.array(end_point) - np.array(closest_end_nodes[0])))
 
-# Find the shortest path using Dijkstra's algorithm
-shortest_path = None
-try:
-    shortest_path = nx.shortest_path(G, source=start_point, target=end_point, weight='weight')
-    # Calculate the length of the shortest path
-    shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point,
-                                                                   weight='weight')
-    print(f"Length of the shortest path: {shortest_path_length}")
-except nx.NetworkXNoPath:
-    print("No valid path found. Please try again with different obstacle distribution.")
+    temp_nodes.clear()
+    # Find the shortest path using Dijkstra's algorithm
+    shortest_path = None
+    try:
+        shortest_path = nx.shortest_path(G, source=start_point, target=end_point, weight='weight')
+        # Calculate the length of the shortest path
+        shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point,
+                                                       weight='weight')
+        print(f"Length of the shortest path: {shortest_path_length} on Try: {iterations}")
+        path_created = True
+    except nx.NetworkXNoPath:
+        print(f"No valid path found. Try : {iterations} ")
+        iterations = iterations+1
 end_time = time.time()
 # Calculate the total time taken
 total_time = end_time - start_time
 print(f"Total execution time: {total_time} seconds")
+print(f"Number of nodes: {len(graph_nodes)}")
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)
+

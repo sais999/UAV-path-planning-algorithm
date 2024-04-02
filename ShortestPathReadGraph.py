@@ -36,7 +36,7 @@ def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_po
 #function to check if an edge is on the available space
 def is_valid_edge(edge, area):
     # Check if the edge overlaps with obstacles
-    for point in np.linspace(edge[0], edge[1], num=500):
+    for point in np.linspace(edge[0], edge[1], num=100):
         x, y = map(int, point)
         if area[x, y] != 0:
             return False
