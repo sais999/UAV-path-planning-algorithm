@@ -218,7 +218,7 @@ while pathCreated==False:
                         temp_nodes.append(node)
                     nodes.clear()
                     for node in temp_nodes:
-                        add_node(node)
+                        add_back_node(node)
                     add_new_obstacle_found(obstacle_back)
             obstacle_front = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge_front, area))
 
@@ -265,6 +265,7 @@ graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.ed
 end_time = time.time()
 total_time = end_time - start_time
 print(f"Total execution time: {total_time} seconds")
+print(f"Total obstacles found: {len(obstacles_found)}")
 display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)
 #Display the array with the graph nodes, edges, and the shortest path
 #display_array_with_graph_and_path_with_edges(area, graph_nodes,graph_edges, start_point, end_point, shortest_path)

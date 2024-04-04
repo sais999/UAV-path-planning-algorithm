@@ -236,7 +236,7 @@ try:
     shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point, weight='weight')
     print(f"Length of the shortest path: {shortest_path_length}")
 except nx.NetworkXNoPath:
-    print("No valid path found. Please try again with different obstacle distribution.")
+    print("No valid path found. Please try again with different obstacle distribution. This version of APPAT doesn't always work")
 
 
 graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]

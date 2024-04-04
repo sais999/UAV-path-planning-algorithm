@@ -3,16 +3,16 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt
 import time
-def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
+def display_array_with_graph_and_path(array_2d, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black'])
     bounds = [0, 1]
     norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
 
     plt.imshow(array_2d, cmap=cmap, norm=norm, interpolation='none')
 
-    # Plot graph nodes
-    for node in graph_nodes:
-        plt.plot(node[1], node[0], 'go', markersize=5)  # Green dots for graph nodes
+    # # Plot graph nodes
+    # for node in graph_nodes:
+    #     plt.plot(node[1], node[0], 'go', markersize=5)  # Green dots for graph nodes
 
     # Plot start and end points
     plt.plot(start_point[1], start_point[0], 'bo', markersize=8, label='Start (A)')
@@ -104,8 +104,9 @@ num_nodes = 0
 path_created = False
 iterations = 1
 temp_nodes = []
+num_nodes = 50  # set the number of nodes
 while path_created == False:
-    num_nodes = num_nodes + 50  # set the number of nodes
+
     # create random points
     for i in range(num_nodes):
         random_index = np.random.choice(len(available_space_nodes))
@@ -151,6 +152,7 @@ while path_created == False:
         shortest_path_length = nx.shortest_path_length(G, source=start_point, target=end_point,
                                                        weight='weight')
         print(f"Length of the shortest path: {shortest_path_length} on Try: {iterations}")
+        print(f"Number of nodes for each iteration: {num_nodes}")
         path_created = True
     except nx.NetworkXNoPath:
         print(f"No valid path found. Try: {iterations} ")
@@ -159,8 +161,8 @@ end_time = time.time()
 # Calculate the total time taken
 total_time = end_time - start_time
 print(f"Total execution time: {total_time} seconds")
-print(f"Number of nodes: {len(graph_nodes)}")
+print(f"Total Number of nodes: {len(graph_nodes)}")
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Display the array with the graph nodes, edges, and the shortest path
-display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)
+display_array_with_graph_and_path(area, start_point, end_point, shortest_path)
 
