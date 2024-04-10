@@ -4,16 +4,16 @@ import os
 import matplotlib.pyplot as plt
 import time
 #function to display graph, obstacles, nodes, start and end points, and shortest path
-def display_array_with_graph_and_path(array_2d, graph_nodes, start_point, end_point, path):
+def display_array_with_graph_and_path(array_2d, start_point, end_point, path):
     cmap = plt.cm.colors.ListedColormap(['white', 'black'])
     bounds = [0, 1]
     norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
 
     plt.imshow(array_2d, cmap=cmap, norm=norm, interpolation='none')
 
-    # Plot graph nodes
-    for node in graph_nodes:
-        plt.plot(node[1], node[0], 'go', markersize=5)  # Green dots for graph nodes
+    # # Plot graph nodes
+    # for node in graph_nodes:
+    #     plt.plot(node[1], node[0], 'go', markersize=5)  # Green dots for graph nodes
 
     # Plot start and end points
     plt.plot(start_point[1], start_point[0], 'bo', markersize=8, label='Start (A)')
@@ -157,4 +157,4 @@ graph_nodes = list(G.nodes())
 graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.edges()]
 
 # Display the array with the graph nodes, edges, and the shortest path
-display_array_with_graph_and_path(area, graph_nodes, start_point, end_point, shortest_path)
+display_array_with_graph_and_path(area, start_point, end_point, shortest_path)

@@ -86,14 +86,14 @@ print(listOfObstacles)
 area = np.load('Graphs/Graph1/area.npy')
 # Print the list of obstacle heights
 
-
+start_time = time.time()
 # Identify corners and store them as nodes
 i = 0
 # Get available space nodes (outside obstacles)
 available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
 
-start_time = time.time()
+
 # Set the start point to the top-left corner and end point to the bottom-right corner
 # start_point = (1, 1)
 # end_point = (area_size - 2, area_size - 2)
@@ -104,7 +104,7 @@ num_nodes = 0
 path_created = False
 iterations = 1
 temp_nodes = []
-num_nodes = 50  # set the number of nodes
+num_nodes = 100  # set the number of nodes
 while path_created == False:
 
     # create random points

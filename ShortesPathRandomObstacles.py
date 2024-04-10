@@ -88,11 +88,11 @@ G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
 # Select random start (A) and end (B) points from available space nodes
-#start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
-#start_point = available_space_nodes[start_point]
-#end_point = available_space_nodes[end_point]
-start_point = (0, 0)
-end_point = (area_size-1, area_size-1)
+start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+start_point = available_space_nodes[start_point]
+end_point = available_space_nodes[end_point]
+#start_point = (0, 0)
+#end_point = (area_size-1, area_size-1)
 
 # Add start and end points to the graph
 G.add_node(start_point)
