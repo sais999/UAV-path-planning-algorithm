@@ -172,17 +172,17 @@ back_nodes = []
 # Identify corners and store them as nodes
 
 # # Get available space nodes (outside obstacles)
-available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
+#available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 #
 # # Select random start (A) and end (B) points from available space nodes
-start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
-start_point = available_space_nodes[start_point]
-end_point = available_space_nodes[end_point]
+#start_point, end_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)
+#start_point = available_space_nodes[start_point]
+#end_point = available_space_nodes[end_point]
 # Set the start point to the top-left corner and end point to the bottom-right corner
 #start_point = (1, 1)
 #end_point = (area_size - 2, area_size - 2)
-#start_point = (area_size/2 , 1)
-#end_point = (area_size/2, area_size - 2)
+start_point = (area_size/2 , 1)
+end_point = (area_size/2, area_size - 2)
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Add start and end points to the graph
 G.add_node(start_point)

@@ -30,7 +30,7 @@ area = np.zeros((area_size, area_size), dtype=int)
 # Add random rectangle obstacles
 num_obstacles = 5000
 min_obstacle_size = 2
-max_obstacle_size = 400
+max_obstacle_size = 700
 safety_margin = 5
 listOfObstacles = []
 
