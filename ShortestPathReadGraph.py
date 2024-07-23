@@ -105,7 +105,7 @@ for obstacle in listOfObstacles:
          graph_nodes.append((x+obstacle_width_for, y+obstacle_height_for))
 
 # Get available space nodes (outside obstacles)
-available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
+#available_space_nodes = [(i, j) for i in range(1, area_size - 1) for j in range(1, area_size - 1) if area[i, j] == 0]
 
 # Select random start (A) and end (B) points from available space nodes
 #start_point = np.random.choice(np.arange(len(available_space_nodes)), size=2, replace=False)

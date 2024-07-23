@@ -105,6 +105,9 @@ path_created = False
 iterations = 1
 temp_nodes = []
 num_nodes = 100  # set the number of nodes
+# Add start and end points to the graph
+G.add_node(start_point)
+G.add_node(end_point)
 while path_created == False:
 
     # create random points
@@ -123,18 +126,16 @@ while path_created == False:
             if is_valid_edge(edge, area):
                 G.add_edge(tuple(random_node), tuple(target_node),
                            weight=np.linalg.norm(np.array(random_node) - np.array(target_node)))
-    # Add start and end points to the graph
-    G.add_node(start_point)
-    G.add_node(end_point)
+
 
     # Connect start and end points to the graph
-    closest_start_nodes = get_closest_nodes(start_point, graph_nodes, n_connections)
+    closest_start_nodes = get_closest_nodes(start_point, temp_nodes, n_connections)
     for target_node in closest_start_nodes:
         edge = (start_point, target_node)
         if is_valid_edge(edge, area):
             G.add_edge(start_point, tuple(target_node),
                        weight=np.linalg.norm(np.array(start_point) - np.array(target_node)))
-    closest_end_nodes = get_closest_nodes(end_point, graph_nodes, n_connections)
+    closest_end_nodes = get_closest_nodes(end_point, temp_nodes, n_connections)
     for target_node in closest_end_nodes:
         edge = (end_point, target_node)
         if is_valid_edge(edge, area):
