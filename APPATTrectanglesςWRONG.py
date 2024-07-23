@@ -193,30 +193,21 @@ add_node(start_point)
 #graph_nodes.append(end_point)
 start_time = time.time()
 pathCreated = False
-edge = (start_point, end_point)
-if get_obstacle_collided_id(edge, area) != -1:
-    obstacle = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge, area))
-    nodes = get_nodes(obstacle, area)
-    for node in nodes:
-        temp_nodes.append(node)
-    nodes.clear()
-    for node in temp_nodes:
-        add_node(node)
-    add_new_obstacle_found(obstacle)
-    temp_nodes.clear()  ###
+while pathCreated==False:
+    nodes = []
     for node in graph_nodes:
         temp_nodes.clear()
         edge_front = (node, end_point)
         edge_back = (node, start_point)
         if get_obstacle_collided_id(edge_front, area) == -1:
-            #pathCreated = True
+            pathCreated = True
             # for node in temp_nodes:
             #     add_back_node(node)
             break
 
 
         else:
-            if get_obstacle_collided_id(edge_back, area) != -1:
+            if get_obstacle_collided_id(edge_back,area) != -1:
 
                 obstacle_back = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge_back, area))
 
@@ -228,8 +219,9 @@ if get_obstacle_collided_id(edge, area) != -1:
                     for node in temp_nodes:
                         add_node(node)
                     add_new_obstacle_found(obstacle_back)
-                    temp_nodes.clear()  ###
+                    temp_nodes.clear() ###
             obstacle_front = get_obstacle(listOfObstacles, get_obstacle_collided_id(edge_front, area))
+
 
             if obstacle_front['id'] not in unique_obstacles_found_set:
                 nodes = get_nodes(obstacle_front, area)
@@ -238,14 +230,11 @@ if get_obstacle_collided_id(edge, area) != -1:
                 nodes.clear()
                 for node in temp_nodes:
                     add_node(node)
-                temp_nodes.clear()  ###
+                temp_nodes.clear() ###
                 add_new_obstacle_found(obstacle_front)
 
-                # print(temp_nodes)
-                # print(graph_nodes)
-
-
-
+            #print(temp_nodes)
+            #print(graph_nodes)
 # for node in back_nodes:
 #     add_node(node)
 add_node(end_point)
