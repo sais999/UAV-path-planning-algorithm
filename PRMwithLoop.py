@@ -104,7 +104,7 @@ num_nodes = 0
 path_created = False
 iterations = 1
 temp_nodes = []
-num_nodes = 100  # set the number of nodes
+num_nodes = 50  # set the number of nodes
 # Add start and end points to the graph
 G.add_node(start_point)
 G.add_node(end_point)
@@ -165,5 +165,15 @@ print(f"Total execution time: {total_time} seconds")
 print(f"Total Number of nodes: {len(graph_nodes)}")
 G.add_nodes_from(map(tuple, graph_nodes))  # Convert nodes to tuples
 # Display the array with the graph nodes, edges, and the shortest path
+# find relative error
+file_path = 'Graphs/Graph1/length.txt'
+# Read the file and extract area size
+with open(file_path, 'r') as f:
+    for line in f:
+
+        length = float(line.strip())
+
+relative_error = ((shortest_path_length - length)/length)*100
+print(f"Relative Error: {relative_error}")
 display_array_with_graph_and_path(area, start_point, end_point, shortest_path)
 

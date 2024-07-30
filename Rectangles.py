@@ -158,3 +158,10 @@ graph_edges = [np.array([np.array(edge[0]), np.array(edge[1])]) for edge in G.ed
 
 # Display the array with the graph nodes, edges, and the shortest path
 display_array_with_graph_and_path(area, start_point, end_point, shortest_path)
+
+# Save shortest path length
+folder_path = 'Graphs/Graph1'
+distance_file_path = os.path.join(folder_path,'length.txt')
+with open(distance_file_path, 'w') as f:
+    f.write(f"{shortest_path_length}\n")
+
