@@ -1,4 +1,4 @@
-README for Pathfinding Algorithm Repository
+###README for Pathfinding Algorithm Repository
 Overview
 This repository contains multiple pathfinding algorithms designed to find efficient routes through obstacle-rich environments. The primary focus is on comparing and enhancing three core algorithms: an optimized version of the Probabilistic Roadmap (PRM), the Rectangles algorithm, and a novel algorithm named APPATTrectangles. Each algorithm is benchmarked against various scenarios to assess computational efficiency and path accuracy.
 Key Contributions
